@@ -21,6 +21,7 @@ func TestQueryToBSON(t *testing.T) {
 	q.Add("born_at", bsonbuilder.OperatorGte, time.Date(1990, 4, 1, 20, 0, 0, 0, time.Local))
 	q.Add("email", bsonbuilder.OperatorLike, "@company.com")
 	q.Add("is_active", bsonbuilder.OperatorNe, false)
+	q.Add("weight", bsonbuilder.OperatorExists, true)
 
 	expected := bson.M{
 		"name":      bson.M{"$in": []interface{}{"tom", "jery"}, "$ne": "mary"},
@@ -28,6 +29,7 @@ func TestQueryToBSON(t *testing.T) {
 		"born_at":   bson.M{"$gte": time.Date(1990, 4, 1, 20, 0, 0, 0, time.Local)},
 		"email":     bson.M{"$regex": bson.RegEx{Pattern: "@company.com"}},
 		"is_active": bson.M{"$ne": false},
+		"weight":    bson.M{"$exists": true},
 	}
 
 	assert.Equal(t, expected, q.ToBSON())

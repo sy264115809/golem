@@ -17,6 +17,7 @@ const (
 	OperatorLt
 	OperatorLte
 	OperatorLike
+	OperatorExists
 )
 
 // ToBSON converts operator to bson.
@@ -64,6 +65,17 @@ func (op Operator) ToBSON(vals ...interface{}) bson.M {
 			"$regex": bson.RegEx{
 				Pattern: fmt.Sprint(vals[0]),
 			},
+		}
+
+	case OperatorExists:
+		exists := true
+		if len(vals) > 0 {
+			if val, ok := vals[0].(bool); ok {
+				exists = val
+			}
+		}
+		return bson.M{
+			"$exists": exists,
 		}
 
 	default:

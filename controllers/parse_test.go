@@ -1617,6 +1617,12 @@ func TestQueryBSON(t *testing.T) {
 					"name": bson.M{"$regex": bson.RegEx{Pattern: "black"}},
 				},
 			},
+			{
+				q: "name_exists=false",
+				expected: bson.M{
+					"name": bson.M{"$exists": false},
+				},
+			},
 		}
 		testFn(t, testcases)
 	})
@@ -1624,13 +1630,13 @@ func TestQueryBSON(t *testing.T) {
 	t.Run("complex query", func(t *testing.T) {
 		testcases := []testcase{
 			{
-				q: "name=jack&name=mary&age_gte=18&age_lte=60&born_at_gt=1990-01-01T00:00:00&email_like=@gmail.com&weight_gt=60.5&parent.id=58db2700cf2f6715b00021a7&parent.id_ne=58db2700cf2f6715b00021a8",
+				q: "name=jack&name=mary&age_gte=18&age_lte=60&born_at_gt=1990-01-01T00:00:00&email_like=@gmail.com&weight_gt=60.5&parent.id=58db2700cf2f6715b00021a7&parent._id_exists=true&parent.id_ne=58db2700cf2f6715b00021a8",
 				expected: bson.M{
 					"name":       bson.M{"$in": []interface{}{"jack", "mary"}},
 					"age":        bson.M{"$gte": 18, "$lte": 60},
 					"weight":     bson.M{"$gt": 60.5},
 					"born_at":    bson.M{"$gt": time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC)},
-					"parent._id": bson.M{"$eq": bson.ObjectIdHex("58db2700cf2f6715b00021a7"), "$ne": bson.ObjectIdHex("58db2700cf2f6715b00021a8")},
+					"parent._id": bson.M{"$exists": true, "$eq": bson.ObjectIdHex("58db2700cf2f6715b00021a7"), "$ne": bson.ObjectIdHex("58db2700cf2f6715b00021a8")},
 					"email":      bson.M{"$regex": bson.RegEx{Pattern: "@gmail.com"}},
 				},
 			},

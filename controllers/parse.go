@@ -367,12 +367,13 @@ func (c *Base) QueryBSON(ctx *iris.Context, convertors ...func(key, value string
 			// handle suffix _gt, _gte, _lt, _lte, _ne, _like, decides what operator should be used
 			actualKey, op := key, bsonbuilder.OperatorEq
 			for suffix, o := range map[string]bsonbuilder.Operator{
-				"_gt":   bsonbuilder.OperatorGt,
-				"_gte":  bsonbuilder.OperatorGte,
-				"_lt":   bsonbuilder.OperatorLt,
-				"_lte":  bsonbuilder.OperatorLte,
-				"_ne":   bsonbuilder.OperatorNe,
-				"_like": bsonbuilder.OperatorLike,
+				"_gt":     bsonbuilder.OperatorGt,
+				"_gte":    bsonbuilder.OperatorGte,
+				"_lt":     bsonbuilder.OperatorLt,
+				"_lte":    bsonbuilder.OperatorLte,
+				"_ne":     bsonbuilder.OperatorNe,
+				"_like":   bsonbuilder.OperatorLike,
+				"_exists": bsonbuilder.OperatorExists,
 			} {
 				if strings.HasSuffix(actualKey, suffix) {
 					op = o
